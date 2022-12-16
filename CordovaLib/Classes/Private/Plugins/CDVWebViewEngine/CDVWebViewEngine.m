@@ -76,6 +76,8 @@
     if (settings == nil) {
         return configuration;
     }
+    
+    [configuration.websiteDataStore.httpCookieStore addObserver:self];
 
     configuration.allowsInlineMediaPlayback = [settings cordovaBoolSettingForKey:@"AllowInlineMediaPlayback" defaultValue:NO];
 
@@ -146,6 +148,22 @@
     }
 
     return configuration;
+}
+
+- (void)cookiesDidChangeInCookieStore:(WKHTTPCookieStore *)cookieStore {
+    [cookieStore getAllCookies:^(NSArray* cookies) {
+        NSHTTPCookie* cookie;
+        for(cookie in cookies) {
+            if(cookie.sameSitePolicy) {
+                NSMutableDictionary* cookieDict = [cookie.properties mutableCopy];
+                [cookieDict setObject:@"none" forKey:@"SameSite"];
+                NSHTTPCookie* newCookie = [NSHTTPCookie cookieWithProperties:cookieDict];
+                [cookieStore deleteCookie:cookie completionHandler:nil];
+                [cookieStore setCookie:newCookie completionHandler:nil];
+            }
+           
+        }
+    }];
 }
 
 - (void)pluginInitialize
