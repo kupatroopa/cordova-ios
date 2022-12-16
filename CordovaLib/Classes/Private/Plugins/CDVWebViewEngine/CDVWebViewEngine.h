@@ -20,7 +20,7 @@
 #import <WebKit/WebKit.h>
 #import <Cordova/CDV.h>
 
-@interface CDVWebViewEngine : CDVPlugin <CDVWebViewEngineProtocol, WKScriptMessageHandler, WKNavigationDelegate>
+@interface CDVWebViewEngine : CDVPlugin <CDVWebViewEngineProtocol, WKScriptMessageHandler, WKNavigationDelegate, WKHTTPCookieStoreObserver>
 
 @property (nonatomic, strong, readonly) id <WKUIDelegate> uiDelegate;
 
